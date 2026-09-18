@@ -1,0 +1,211 @@
+---
+import SiteLayout from '../layouts/SiteLayout.astro';
+import Banner from '../components/Banner.astro';
+import { SITE, RESUME, RESUME_DRAFTS, PAGE_META } from '../data/site';
+import { graph, websiteSchema, personSchema, profilePageSchema, breadcrumbSchema } from '../data/schema';
+
+import contactShip from '../assets/images/contact-ship.jpg';
+
+const jsonLd = graph([
+  websiteSchema(),
+  personSchema(),
+  profilePageSchema(),
+  breadcrumbSchema([
+    { name: 'Home', path: '/' },
+    { name: 'Résumé', path: '/resume' },
+  ]),
+]);
+
+const hasPdf = Boolean(RESUME_DRAFTS.downloadablePdf);
+---
+
+<SiteLayout
+  title={PAGE_META.resume.title}
+  description={PAGE_META.resume.description}
+  path="/resume"
+  jsonLd={jsonLd}
+  ogType="profile"
+  mainClass="resume"
+>
+  <Banner
+    slot="banner"
+    image={contactShip}
+    alt="A cargo ship and harbour cranes in silhouette at dusk."
+    title="Résumé"
+    focal="50% 45%"
+  />
+
+  <div class="container section">
+    <div class="resume-actions no-print">
+      <button id="print-resume" type="button" class="btn-print">Print / Save as PDF</button>
+      {hasPdf && <a class="btn-download" href={RESUME_DRAFTS.downloadablePdf} download>Download résumé (PDF)</a>}
+    </div>
+
+    <article class="resume-doc">
+      <header class="resume-head resume-section">
+        <p class="resume-name">{RESUME.name}</p>
+        <p class="resume-role">{RESUME.role}</p>
+        <ul class="resume-meta" role="list">
+          <li><a href={`https://${RESUME.website}`}>{RESUME.website}</a></li>
+          <li><a href={`mailto:${SITE.email}`}>{RESUME.email}</a></li>
+        </ul>
+      </header>
+
+      <section class="resume-section" aria-labelledby="r-summary">
+        <h2 id="r-summary">Summary</h2>
+        <p>{RESUME.summary}</p>
+      </section>
+
+      <section class="resume-section" aria-labelledby="r-experience">
+        <h2 id="r-experience">Experience</h2>
+        {
+          RESUME.experience.map((job) => (
+            <div class="resume-job">
+              <div class="resume-job-head">
+                <span class="resume-job-title">
+                  {job.title}, {job.org}
+                </span>
+                {job.dates && <span class="resume-job-dates">{job.dates}</span>}
+              </div>
+              <ul role="list">
+                {job.points.map((pt) => (
+                  <li>{pt}</li>
+                ))}
+              </ul>
+            </div>
+          ))
+        }
+      </section>
+
+      <section class="resume-section" aria-labelledby="r-earlier">
+        <h2 id="r-earlier">Earlier career</h2>
+        <p>{RESUME.earlierCareer}</p>
+      </section>
+
+      <section class="resume-section" aria-labelledby="r-skills">
+        <h2 id="r-skills">Core skills</h2>
+        <ul class="resume-skills" role="list">
+          {RESUME.coreSkills.map((s) => <li>{s}</li>)}
+        </ul>
+      </section>
+    </article>
+  </div>
+</SiteLayout>
+
+<style>
+  .resume-actions {
+    display: flex;
+    gap: 0.75rem;
+    flex-wrap: wrap;
+    margin-bottom: clamp(1.5rem, 4vw, 2.5rem);
+  }
+  .btn-print,
+  .btn-download {
+    font-family: var(--font-nav);
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    font-size: 0.85rem;
+    padding: 0.7rem 1.2rem;
+    border-radius: var(--radius-sm);
+    text-decoration: none;
+  }
+  .btn-print {
+    background: var(--c-cream);
+    color: var(--c-cream-text);
+    border: 2px solid var(--c-cream);
+  }
+  .btn-print:hover {
+    background: #fff;
+  }
+  .btn-download {
+    background: transparent;
+    color: var(--c-text);
+    border: 2px solid var(--c-hairline);
+  }
+
+  .resume-doc {
+    max-width: 780px;
+  }
+  .resume-name {
+    font-family: var(--font-display);
+    text-transform: uppercase;
+    font-weight: 700;
+    font-size: clamp(2rem, 5vw, 3rem);
+    line-height: 1;
+  }
+  .resume-role {
+    font-family: var(--font-display);
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--c-wordmark-gray);
+    font-size: 1.15rem;
+    margin-top: 0.25rem;
+  }
+  .resume-meta {
+    list-style: none;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem 1.5rem;
+    padding: 0;
+    margin-top: 0.9rem;
+    font-size: var(--fs-small);
+  }
+  .resume-meta a {
+    color: var(--c-text);
+  }
+
+  .resume-section {
+    margin-top: clamp(1.75rem, 4vw, 2.5rem);
+  }
+  .resume-section h2 {
+    font-size: var(--fs-h3);
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    border-bottom: 1px solid var(--c-hairline);
+    padding-bottom: 0.4rem;
+    margin-bottom: 1rem;
+  }
+  .resume-job-head {
+    display: flex;
+    justify-content: space-between;
+    gap: 1rem;
+    flex-wrap: wrap;
+    align-items: baseline;
+  }
+  .resume-job-title {
+    font-weight: 700;
+    font-size: 1.1rem;
+  }
+  .resume-job-dates {
+    color: var(--c-muted);
+    font-size: var(--fs-small);
+  }
+  .resume-section ul {
+    padding-left: 1.2rem;
+    display: grid;
+    gap: 0.4rem;
+    margin-top: 0.6rem;
+  }
+  .resume-skills {
+    list-style: none;
+    padding-left: 0 !important;
+    display: grid !important;
+    grid-template-columns: repeat(auto-fill, minmax(min(100%, 260px), 1fr));
+    gap: 0.5rem 1.5rem !important;
+  }
+  .resume-skills li {
+    padding-left: 1.1rem;
+    position: relative;
+  }
+  .resume-skills li::before {
+    content: '▸';
+    position: absolute;
+    left: 0;
+    color: var(--c-pixel-yellow);
+  }
+</style>
+
+<script>
+  document.getElementById('print-resume')?.addEventListener('click', () => window.print());
+</script>

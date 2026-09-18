@@ -1,0 +1,26 @@
+# Security + caching headers for STATIC assets.
+# NOTE: these do NOT apply to Pages Function responses (/api/*) — that Function
+# sets its own headers (incl. Cache-Control: no-store) in code.
+#
+# CSP trade-off: script-src/style-src keep 'unsafe-inline' because Astro inlines
+# its small bundled module scripts and component styles directly into each page.
+# The site is fully static and reflects no user input (no HTML-injection sink),
+# so this is a defense-in-depth gap, not a live XSS vector. To remove it, adopt
+# Astro's built-in CSP script/style hashing (or force scripts to external
+# /_astro/ files) and tighten to script-src 'self' https://challenges.cloudflare.com.
+
+/*
+  X-Content-Type-Options: nosniff
+  Referrer-Policy: strict-origin-when-cross-origin
+  X-Frame-Options: DENY
+  Permissions-Policy: camera=(), microphone=(), geolocation=(), interest-cohort=()
+  Strict-Transport-Security: max-age=63072000
+  Content-Security-Policy: default-src 'self'; base-uri 'self'; object-src 'none'; frame-ancestors 'none'; form-action 'self'; img-src 'self' data:; font-src 'self'; style-src 'self' 'unsafe-inline'; script-src 'self' 'unsafe-inline' https://challenges.cloudflare.com; connect-src 'self' https://challenges.cloudflare.com; frame-src https://challenges.cloudflare.com
+
+# Fingerprinted build assets never change — cache hard.
+/_astro/*
+  Cache-Control: public, max-age=31536000, immutable
+
+# Brand images and fonts.
+/img/*
+  Cache-Control: public, max-age=2592000

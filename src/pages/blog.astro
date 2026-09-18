@@ -1,0 +1,173 @@
+---
+import { Image } from 'astro:assets';
+import SiteLayout from '../layouts/SiteLayout.astro';
+import Banner from '../components/Banner.astro';
+import { PAGE_META } from '../data/site';
+import { graph, websiteSchema, personSchema, breadcrumbSchema } from '../data/schema';
+
+import oceanWake from '../assets/images/ocean-wake.jpg';
+import panamaPorts from '../assets/images/panama-ports.jpg';
+import seaboard from '../assets/images/seaboard.jpg';
+
+const jsonLd = graph([
+  websiteSchema(),
+  personSchema(),
+  breadcrumbSchema([
+    { name: 'Home', path: '/' },
+    { name: 'Blog', path: '/blog' },
+  ]),
+]);
+---
+
+<SiteLayout title={PAGE_META.blog.title} description={PAGE_META.blog.description} path="/blog" jsonLd={jsonLd}>
+  <Banner
+    slot="banner"
+    image={oceanWake}
+    alt="The churning wake trailing behind a ship at sea."
+    title="Blog"
+    focal="50% 45%"
+  />
+
+  <div class="blog-surface">
+    <div class="container section">
+      <p class="blog-intro">
+        This is where I collect project and port stories — notes from the terminals I work with, where the
+        software I train on meets the reality of a working port. The Panama 2026 collection is developing now.
+      </p>
+
+      <ul class="card-grid" role="list">
+        <li>
+          <a class="story-card" href="/panama">
+            <Image
+              src={panamaPorts}
+              alt="A weathered Panama Ports Company sign propped against a building."
+              widths={[420, 640, 900]}
+              sizes="(max-width: 700px) 92vw, 540px"
+              loading="lazy"
+              class="story-card-img"
+            />
+            <span class="story-card-overlay"></span>
+            <span class="story-card-text">
+              <span class="story-card-title">Panama Ports</span>
+              <span class="story-card-sub">An adventure of a lifetime</span>
+            </span>
+          </a>
+        </li>
+
+        <li>
+          <div class="story-card is-coming-soon" aria-label="Seaboard Marine — Training the trainers. Coming soon.">
+            <Image
+              src={seaboard}
+              alt="Stacked shipping containers with Seaboard branding at a terminal."
+              widths={[201]}
+              sizes="(max-width: 700px) 92vw, 540px"
+              loading="lazy"
+              class="story-card-img"
+            />
+            <span class="story-card-overlay"></span>
+            <span class="story-card-text">
+              <span class="story-card-title">Seaboard Marine</span>
+              <span class="story-card-sub">Training the trainers</span>
+              <span class="story-card-status">Coming soon</span>
+            </span>
+          </div>
+        </li>
+      </ul>
+    </div>
+  </div>
+</SiteLayout>
+
+<style>
+  .blog-surface {
+    background: var(--c-olive);
+    min-height: 60vh;
+  }
+  .blog-intro {
+    max-width: 62ch;
+    margin-bottom: clamp(2rem, 5vw, 3rem);
+  }
+
+  .card-grid {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: clamp(1.25rem, 3vw, 2rem);
+    max-width: 1120px;
+  }
+
+  .story-card {
+    position: relative;
+    display: block;
+    aspect-ratio: 5 / 2;
+    border-radius: var(--radius);
+    overflow: hidden;
+    background: #1a1f10;
+    text-decoration: none;
+    color: var(--c-text);
+    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.35);
+  }
+  a.story-card {
+    transition: transform 0.18s var(--ease), box-shadow 0.18s var(--ease);
+  }
+  a.story-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 18px 40px rgba(0, 0, 0, 0.45);
+  }
+  a.story-card:focus-visible {
+    outline: 3px solid var(--c-focus);
+    outline-offset: 3px;
+  }
+  .story-card-img {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: 50% 45%;
+  }
+  .story-card-overlay {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(90deg, rgba(0, 0, 0, 0.72) 0%, rgba(0, 0, 0, 0.35) 45%, rgba(0, 0, 0, 0.12) 100%);
+  }
+  .story-card-text {
+    position: absolute;
+    left: clamp(1rem, 3vw, 1.6rem);
+    bottom: clamp(0.9rem, 3vw, 1.4rem);
+    right: 1rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.2rem;
+  }
+  .story-card-title {
+    font-family: var(--font-display);
+    text-transform: uppercase;
+    font-weight: 700;
+    font-size: clamp(1.4rem, 3.2vw, 2rem);
+    line-height: 1.05;
+  }
+  .story-card-sub {
+    font-size: var(--fs-small);
+    color: #f2f2f0;
+  }
+  .story-card-status {
+    margin-top: 0.5rem;
+    align-self: flex-start;
+    background: var(--c-pixel-yellow);
+    color: #201d17;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    font-size: 0.72rem;
+    padding: 0.25rem 0.6rem;
+    border-radius: 999px;
+  }
+  .is-coming-soon {
+    cursor: default;
+  }
+  .is-coming-soon .story-card-img {
+    filter: saturate(0.85) brightness(0.85);
+  }
+</style>

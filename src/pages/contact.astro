@@ -1,0 +1,40 @@
+---
+import SiteLayout from '../layouts/SiteLayout.astro';
+import Banner from '../components/Banner.astro';
+import ContactForm from '../components/ContactForm.astro';
+import { PAGE_META } from '../data/site';
+import { graph, websiteSchema, personSchema, breadcrumbSchema } from '../data/schema';
+
+import contactShip from '../assets/images/contact-ship.jpg';
+
+const jsonLd = graph([
+  websiteSchema(),
+  personSchema(),
+  breadcrumbSchema([
+    { name: 'Home', path: '/' },
+    { name: 'Contact', path: '/contact' },
+  ]),
+]);
+---
+
+<SiteLayout title={PAGE_META.contact.title} description={PAGE_META.contact.description} path="/contact" jsonLd={jsonLd}>
+  <Banner
+    slot="banner"
+    image={contactShip}
+    alt="A cargo ship and harbour cranes in silhouette at dusk."
+    title="Contact"
+    focal="50% 45%"
+  />
+
+  <div class="contact-surface">
+    <div class="container">
+      <ContactForm />
+    </div>
+  </div>
+</SiteLayout>
+
+<style>
+  .contact-surface {
+    background: var(--c-contact-bg);
+  }
+</style>

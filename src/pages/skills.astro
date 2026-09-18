@@ -1,0 +1,77 @@
+---
+import SiteLayout from '../layouts/SiteLayout.astro';
+import Banner from '../components/Banner.astro';
+import { SKILLS, PAGE_META } from '../data/site';
+import { graph, websiteSchema, personSchema, breadcrumbSchema } from '../data/schema';
+
+import containerShip from '../assets/images/container-ship.jpg';
+
+const jsonLd = graph([
+  websiteSchema(),
+  personSchema(),
+  breadcrumbSchema([
+    { name: 'Home', path: '/' },
+    { name: 'Skills', path: '/skills' },
+  ]),
+]);
+---
+
+<SiteLayout title={PAGE_META.skills.title} description={PAGE_META.skills.description} path="/skills" jsonLd={jsonLd}>
+  <Banner
+    slot="banner"
+    image={containerShip}
+    alt="Rows of stacked shipping containers aboard a vessel, lit at night."
+    title="Skills"
+    focal="50% 55%"
+  />
+
+  <div class="container section">
+    <p class="skills-intro">
+      What I bring to a training room comes from the operational side of ports as much as the software itself.
+      These are the areas I work in — grounded in enterprise software support and the reality of a live terminal.
+    </p>
+
+    <ul class="skills-grid" role="list">
+      {
+        SKILLS.map((s) => (
+          <li class="skill-card">
+            <h2>{s.title}</h2>
+            <p>{s.body}</p>
+          </li>
+        ))
+      }
+    </ul>
+  </div>
+</SiteLayout>
+
+<style>
+  .skills-intro {
+    max-width: 64ch;
+    margin-bottom: clamp(2rem, 5vw, 3rem);
+  }
+  .skills-grid {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(min(100%, 320px), 1fr));
+    gap: clamp(1rem, 2.5vw, 1.75rem);
+  }
+  .skill-card {
+    background: var(--c-band);
+    border: 1px solid var(--c-hairline);
+    border-radius: var(--radius-sm);
+    padding: clamp(1.25rem, 3vw, 1.75rem);
+  }
+  .skill-card h2 {
+    font-size: var(--fs-h3);
+    text-transform: none;
+    letter-spacing: 0;
+    margin-bottom: 0.6rem;
+  }
+  .skill-card p {
+    color: #e9e9e6;
+    font-size: 1.02rem;
+    line-height: 1.55;
+  }
+</style>

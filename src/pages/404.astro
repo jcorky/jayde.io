@@ -1,0 +1,64 @@
+---
+import SiteLayout from '../layouts/SiteLayout.astro';
+import { NAV, PAGE_META } from '../data/site';
+---
+
+<SiteLayout title={PAGE_META.notFound.title} description={PAGE_META.notFound.description} path="/404" noindex={true}>
+  <section class="notfound">
+    <div class="container">
+      <p class="nf-code" aria-hidden="true">404</p>
+      <h1 class="nf-title">This page drifted off course</h1>
+      <p class="nf-lead">
+        The page you were looking for isn’t here. It may have moved, or the link may be out of date.
+      </p>
+      <nav aria-label="Site sections" class="nf-links">
+        <ul role="list">
+          {NAV.map((item) => <li><a href={item.href}>{item.label}</a></li>)}
+        </ul>
+      </nav>
+    </div>
+  </section>
+</SiteLayout>
+
+<style>
+  .notfound {
+    background: var(--c-contact-bg);
+    min-height: 60vh;
+    display: grid;
+    align-items: center;
+    padding-block: clamp(3rem, 10vw, 6rem);
+  }
+  .nf-code {
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: clamp(4rem, 16vw, 9rem);
+    line-height: 1;
+    color: var(--c-pixel-yellow);
+  }
+  .nf-title {
+    font-size: var(--fs-h2);
+    margin: 0.5rem 0 1rem;
+  }
+  .nf-lead {
+    max-width: 52ch;
+    color: #e6e4e0;
+  }
+  .nf-links ul {
+    list-style: none;
+    padding: 0;
+    margin-top: 2rem;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem 1.75rem;
+  }
+  .nf-links a {
+    font-family: var(--font-nav);
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    font-size: 0.9rem;
+    text-decoration: none;
+    border-bottom: 2px solid var(--c-pixel-yellow);
+    padding-bottom: 0.15rem;
+  }
+</style>

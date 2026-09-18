@@ -1,0 +1,184 @@
+---
+import { NAV } from '../data/site';
+
+// Current path, normalised without a trailing slash, for aria-current.
+const here = Astro.url.pathname.replace(/\/+$/, '') || '/';
+const isCurrent = (href: string) => (href === '/' ? here === '/' : here === href || here.startsWith(href + '/'));
+---
+
+<header class="site-header" data-site-header>
+  <nav class="site-nav container" aria-label="Primary">
+    <a class="nav-home-brand" href="/">
+      <span class="visually-hidden">Jayde.IO — home</span>
+      <span aria-hidden="true">JAYDE.IO</span>
+    </a>
+
+    <button
+      class="mobile-menu-toggle"
+      type="button"
+      aria-expanded="false"
+      aria-controls="primary-menu"
+      aria-label="Open menu"
+    >
+      <span class="bars" aria-hidden="true"></span>
+      <span class="toggle-label">Menu</span>
+    </button>
+
+    <ul id="primary-menu" class="nav-list">
+      {
+        NAV.map((item) => (
+          <li>
+            <a href={item.href} aria-current={isCurrent(item.href) ? 'page' : undefined}>
+              {item.label}
+            </a>
+          </li>
+        ))
+      }
+    </ul>
+  </nav>
+</header>
+
+<style>
+  .site-header {
+    background: var(--c-nav);
+    border-block: 1px solid var(--c-hairline);
+    position: relative;
+    z-index: 20;
+  }
+  .site-nav {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    min-height: var(--nav-h);
+  }
+  .nav-home-brand {
+    font-family: var(--font-display);
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    font-size: 1.05rem;
+    text-decoration: none;
+    color: var(--c-text);
+    padding-block: 0.55rem;
+  }
+  .nav-list {
+    list-style: none;
+    display: flex;
+    align-items: center;
+    gap: clamp(1rem, 3vw, 2.75rem);
+    padding: 0;
+    margin: 0;
+  }
+  .nav-list a {
+    font-family: var(--font-nav);
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    font-size: 0.9rem;
+    text-decoration: none;
+    color: var(--c-text);
+    padding: 0.9rem 0.25rem;
+    display: inline-block;
+    border-bottom: 2px solid transparent;
+    transition: border-color 0.15s var(--ease), opacity 0.15s var(--ease);
+  }
+  .nav-list a:hover {
+    border-bottom-color: var(--c-muted);
+  }
+  .nav-list a[aria-current='page'] {
+    border-bottom-color: var(--c-pixel-yellow);
+  }
+
+  /* Toggle hidden until JS enhances + narrow viewport. */
+  .mobile-menu-toggle {
+    display: none;
+    align-items: center;
+    gap: 0.5rem;
+    background: transparent;
+    border: 1px solid var(--c-hairline);
+    border-radius: var(--radius-sm);
+    color: var(--c-text);
+    padding: 0.5rem 0.8rem;
+    font-family: var(--font-nav);
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    font-size: 0.82rem;
+  }
+  .mobile-menu-toggle .bars,
+  .mobile-menu-toggle .bars::before,
+  .mobile-menu-toggle .bars::after {
+    content: '';
+    display: block;
+    width: 20px;
+    height: 2px;
+    background: currentColor;
+    position: relative;
+  }
+  .mobile-menu-toggle .bars::before { position: absolute; top: -6px; }
+  .mobile-menu-toggle .bars::after { position: absolute; top: 6px; }
+
+  @media (max-width: 720px) {
+    .site-nav {
+      flex-wrap: wrap;
+      padding-block: 0.5rem;
+    }
+    .nav-list {
+      width: 100%;
+      flex-direction: column;
+      align-items: stretch;
+      gap: 0;
+    }
+    .nav-list a {
+      padding: 0.85rem 0.25rem;
+      border-bottom: 1px solid var(--c-hairline);
+    }
+    .nav-list a[aria-current='page'] {
+      border-bottom-color: var(--c-pixel-yellow);
+    }
+
+    /* Enhanced (JS on): collapse the list behind the toggle. */
+    [data-site-header].is-enhanced .mobile-menu-toggle {
+      display: inline-flex;
+    }
+    [data-site-header].is-enhanced .nav-list {
+      display: none;
+    }
+    [data-site-header].is-enhanced.is-open .nav-list {
+      display: flex;
+    }
+  }
+</style>
+
+<script>
+  // Progressive enhancement: without JS the full list stays visible and usable.
+  const header = document.querySelector<HTMLElement>('[data-site-header]');
+  const toggle = header?.querySelector<HTMLButtonElement>('.mobile-menu-toggle');
+  const list = header?.querySelector<HTMLElement>('#primary-menu');
+
+  if (header && toggle && list) {
+    header.classList.add('is-enhanced');
+
+    const setOpen = (open: boolean) => {
+      header.classList.toggle('is-open', open);
+      toggle.setAttribute('aria-expanded', String(open));
+      toggle.setAttribute('aria-label', open ? 'Close menu' : 'Open menu');
+    };
+
+    toggle.addEventListener('click', () => setOpen(!header.classList.contains('is-open')));
+
+    // Close on link activation, Escape, and outside click.
+    list.addEventListener('click', (e) => {
+      if ((e.target as HTMLElement).closest('a')) setOpen(false);
+    });
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && header.classList.contains('is-open')) {
+        setOpen(false);
+        toggle.focus();
+      }
+    });
+    document.addEventListener('click', (e) => {
+      if (header.classList.contains('is-open') && !header.contains(e.target as Node)) setOpen(false);
+    });
+  }
+</script>

@@ -1,0 +1,62 @@
+---
+import '@fontsource/antonio/700.css';
+import '@fontsource/public-sans/400.css';
+import '@fontsource/public-sans/600.css';
+import '@fontsource/public-sans/700.css';
+import '../styles/global.css';
+import '../styles/print.css';
+
+import SEO from '../components/SEO.astro';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import { SITE } from '../data/site';
+
+interface Props {
+  title: string;
+  description: string;
+  path: string;
+  noindex?: boolean;
+  jsonLd?: object | null;
+  ogType?: string;
+  /** Class on <main> for page-specific scoping (e.g. print rules). */
+  mainClass?: string;
+}
+
+const { title, description, path, noindex = false, jsonLd = null, ogType = 'website', mainClass = '' } =
+  Astro.props;
+
+const hasBanner = Astro.slots.has('banner');
+---
+
+<!doctype html>
+<html lang={SITE.locale}>
+  <head>
+    <SEO title={title} description={description} path={path} noindex={noindex} jsonLd={jsonLd} ogType={ogType} />
+  </head>
+  <body>
+    <a class="skip-link" href="#main">Skip to content</a>
+
+    {hasBanner && <slot name="banner" />}
+    <Header />
+
+    <main id="main" class={mainClass} tabindex="-1">
+      <slot />
+    </main>
+
+    <Footer />
+
+    <script>
+      // Legacy Canva hash links. Fragments never reach the server, so map them
+      // client-side to the real routes. Old shared links only.
+      const map: Record<string, string> = {
+        '#page-0': '/',
+        '#page-1': '/blog',
+        '#page-2': '/contact',
+      };
+      const dest = map[location.hash];
+      if (dest && location.pathname === '/') {
+        location.replace(dest);
+      }
+    </script>
+  </body>
+</html>

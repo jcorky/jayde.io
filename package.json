@@ -1,0 +1,30 @@
+{
+  "name": "jayde-io",
+  "type": "module",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Jayde.IO — personal website for Jayde Cork, Technical Trainer. Astro static site on Cloudflare Pages.",
+  "engines": {
+    "node": ">=22.12.0"
+  },
+  "scripts": {
+    "dev": "astro dev",
+    "build": "astro build",
+    "preview": "astro preview",
+    "check": "astro check",
+    "test": "node --experimental-strip-types --test test/contact.test.ts",
+    "pages:dev": "wrangler pages dev dist --compatibility-date=2025-09-01"
+  },
+  "dependencies": {
+    "@fontsource/antonio": "^5.2.6",
+    "@fontsource/public-sans": "^5.2.6",
+    "astro": "^7.2.1"
+  },
+  "devDependencies": {
+    "@astrojs/check": "^0.9.10",
+    "@cloudflare/workers-types": "^5.20260918.1",
+    "sharp": "^0.34.2",
+    "typescript": "^5.9.2",
+    "wrangler": "^4.40.0"
+  }
+}

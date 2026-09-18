@@ -1,0 +1,337 @@
+---
+import { SITE } from '../data/site';
+
+// Public build-time site key. Falls back to Cloudflare's always-passing TEST key
+// so the widget works in local dev before a real key is configured.
+const siteKey = import.meta.env.PUBLIC_TURNSTILE_SITE_KEY ?? '1x00000000000000000000AA';
+---
+
+<!-- Turnstile client script -->
+<script is:inline src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
+
+<section class="contact-panel-wrap" aria-labelledby="contact-form-heading">
+  <div class="contact-panel">
+    <h2 id="contact-form-heading">Contact Form</h2>
+
+    <form id="contact-form" method="post" action="/api/contact" novalidate>
+      <div class="field">
+        <label for="cf-name">Name</label>
+        <input
+          id="cf-name"
+          name="name"
+          type="text"
+          autocomplete="name"
+          required
+          maxlength="100"
+          aria-describedby="cf-name-error"
+        />
+        <p class="field-error" id="cf-name-error" hidden></p>
+      </div>
+
+      <div class="field">
+        <label for="cf-email">Email address</label>
+        <input
+          id="cf-email"
+          name="email"
+          type="email"
+          autocomplete="email"
+          required
+          maxlength="254"
+          aria-describedby="cf-email-error"
+        />
+        <p class="field-error" id="cf-email-error" hidden></p>
+      </div>
+
+      <div class="field">
+        <label for="cf-message">Leave a message</label>
+        <textarea
+          id="cf-message"
+          name="message"
+          rows="5"
+          required
+          maxlength="5000"
+          aria-describedby="cf-message-error"></textarea>
+        <p class="field-error" id="cf-message-error" hidden></p>
+      </div>
+
+      <!-- Honeypot: hidden from people, tempting to bots. -->
+      <div class="hp" aria-hidden="true">
+        <label for="cf-company">Company (leave blank)</label>
+        <input id="cf-company" name="company" type="text" tabindex="-1" autocomplete="off" />
+      </div>
+
+      <div class="cf-turnstile" data-sitekey={siteKey} data-action="contact" data-theme="light"></div>
+
+      <button id="cf-submit" type="submit" class="submit-btn">Submit</button>
+
+      <p id="cf-status" class="form-status" role="status" aria-live="polite"></p>
+
+      <p class="form-note">
+        Your name, email, and message are used only to respond to your inquiry. Prefer email? Reach me at
+        <a href={`mailto:${SITE.email}`}>{SITE.email}</a>.
+      </p>
+
+      <noscript>
+        <p class="form-note">
+          This form needs JavaScript to guard against spam and send your message. Please email me directly at
+          <a href={`mailto:${SITE.email}`}>{SITE.email}</a>.
+        </p>
+      </noscript>
+    </form>
+  </div>
+</section>
+
+<style>
+  .contact-panel-wrap {
+    display: grid;
+    place-items: start center;
+    padding-block: clamp(2rem, 6vw, 4rem);
+  }
+  .contact-panel {
+    width: min(100%, 640px);
+    background: var(--c-cream);
+    color: var(--c-cream-text);
+    border-radius: var(--radius);
+    padding: clamp(1.5rem, 5vw, 2.75rem);
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.45);
+  }
+  #contact-form-heading {
+    font-family: var(--font-body);
+    font-weight: 700;
+    text-transform: none;
+    letter-spacing: 0;
+    font-size: clamp(1.5rem, 4vw, 2rem);
+    color: var(--c-cream-text);
+    margin-bottom: 1.5rem;
+  }
+
+  .field {
+    margin-bottom: 1.25rem;
+  }
+  .field label {
+    display: block;
+    font-weight: 600;
+    margin-bottom: 0.4rem;
+    font-size: 0.98rem;
+  }
+  .field input,
+  .field textarea {
+    width: 100%;
+    background: #fdf8f0;
+    color: var(--c-cream-text);
+    border: 1px solid #cfc4b2;
+    border-radius: 10px;
+    padding: 0.7rem 0.85rem;
+    font-size: 1rem;
+  }
+  .field textarea {
+    resize: vertical;
+    min-height: 120px;
+  }
+  .field input:focus-visible,
+  .field textarea:focus-visible {
+    outline: 3px solid #6b5a3e;
+    outline-offset: 1px;
+    border-color: #6b5a3e;
+  }
+  .field-error {
+    color: #8a1c11;
+    font-size: 0.85rem;
+    margin-top: 0.35rem;
+    font-weight: 600;
+  }
+  .field[data-invalid] input,
+  .field[data-invalid] textarea {
+    border-color: #8a1c11;
+  }
+
+  /* Honeypot — removed from layout and from assistive tech. */
+  .hp {
+    position: absolute;
+    left: -9999px;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+  }
+
+  .cf-turnstile {
+    margin: 0.5rem 0 1.25rem;
+    min-height: 65px;
+  }
+
+  .submit-btn {
+    width: 100%;
+    /* Dark button for strong contrast on the cream panel. */
+    background: var(--c-cream-text);
+    color: var(--c-cream);
+    border: 2px solid var(--c-cream-text);
+    border-radius: 14px;
+    padding: 0.95rem 1rem;
+    font-size: 1.05rem;
+    font-weight: 700;
+    transition: background 0.15s var(--ease), transform 0.1s var(--ease);
+  }
+  .submit-btn:hover:not(:disabled) {
+    background: #1f1d1a;
+  }
+  .submit-btn:disabled {
+    opacity: 0.65;
+    cursor: progress;
+  }
+
+  .form-status {
+    margin-top: 1rem;
+    font-weight: 600;
+    min-height: 1.2em;
+  }
+  .form-status[data-kind='success'] {
+    color: #1c6b2e;
+  }
+  .form-status[data-kind='error'] {
+    color: #8a1c11;
+  }
+  .form-note {
+    margin-top: 1rem;
+    font-size: 0.88rem;
+    color: #5a544b;
+  }
+  .form-note a {
+    color: var(--c-cream-text);
+  }
+</style>
+
+<script>
+  const form = document.getElementById('contact-form') as HTMLFormElement | null;
+  if (form) {
+    const statusEl = document.getElementById('cf-status') as HTMLParagraphElement;
+    const submitBtn = document.getElementById('cf-submit') as HTMLButtonElement;
+    const fields = ['name', 'email', 'message'] as const;
+
+    const emailOk = (v: string) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v);
+
+    const setStatus = (msg: string, kind: 'success' | 'error' | '' = '') => {
+      statusEl.textContent = msg;
+      if (kind) statusEl.setAttribute('data-kind', kind);
+      else statusEl.removeAttribute('data-kind');
+    };
+
+    const clearErrors = () => {
+      for (const f of fields) {
+        const wrap = document.getElementById(`cf-${f}`)?.closest('.field');
+        const err = document.getElementById(`cf-${f}-error`);
+        wrap?.removeAttribute('data-invalid');
+        if (err) {
+          err.hidden = true;
+          err.textContent = '';
+        }
+      }
+    };
+
+    const showError = (f: string, msg: string) => {
+      const wrap = document.getElementById(`cf-${f}`)?.closest('.field');
+      const err = document.getElementById(`cf-${f}-error`);
+      wrap?.setAttribute('data-invalid', 'true');
+      if (err) {
+        err.textContent = msg;
+        err.hidden = false;
+      }
+    };
+
+    const resetTurnstile = () => {
+      // Tokens are single-use; refresh for a possible retry.
+      try {
+        (window as any).turnstile?.reset();
+      } catch {
+        /* widget not ready */
+      }
+    };
+
+    let sending = false;
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      if (sending) return;
+      clearErrors();
+      setStatus('');
+
+      const data = new FormData(form);
+      const name = (data.get('name') as string)?.trim() ?? '';
+      const email = (data.get('email') as string)?.trim() ?? '';
+      const message = (data.get('message') as string)?.trim() ?? '';
+      const company = (data.get('company') as string) ?? '';
+      const token = (data.get('cf-turnstile-response') as string) ?? '';
+
+      // Client-side validation (the server validates again).
+      let firstBad: string | null = null;
+      if (!name) {
+        showError('name', 'Please enter your name.');
+        firstBad ??= 'name';
+      }
+      if (!email || !emailOk(email)) {
+        showError('email', 'Please enter a valid email address.');
+        firstBad ??= 'email';
+      }
+      if (!message) {
+        showError('message', 'Please enter a message.');
+        firstBad ??= 'message';
+      }
+      if (firstBad) {
+        document.getElementById(`cf-${firstBad}`)?.focus();
+        setStatus('Please fix the highlighted fields.', 'error');
+        return;
+      }
+      if (!token) {
+        setStatus('Please complete the verification challenge, then submit again.', 'error');
+        return;
+      }
+
+      sending = true;
+      submitBtn.disabled = true;
+      form.setAttribute('aria-busy', 'true');
+      const originalLabel = submitBtn.textContent;
+      submitBtn.textContent = 'Sending…';
+      setStatus('Sending your message…');
+
+      try {
+        const res = await fetch('/api/contact', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
+          body: JSON.stringify({ name, email, message, company, 'cf-turnstile-response': token }),
+        });
+        let payload: any = {};
+        try {
+          payload = await res.json();
+        } catch {
+          /* non-JSON */
+        }
+
+        if (res.ok && payload.ok) {
+          form.reset();
+          resetTurnstile();
+          setStatus('Thanks — your message has been sent. I’ll get back to you soon.', 'success');
+          document.getElementById('cf-status')?.focus?.();
+        } else if (res.status === 429) {
+          resetTurnstile();
+          setStatus('Too many attempts right now. Please wait a minute and try again.', 'error');
+        } else if (res.status === 400 || res.status === 422) {
+          resetTurnstile();
+          setStatus(payload.error || 'Please check your details and try again.', 'error');
+        } else {
+          resetTurnstile();
+          setStatus(
+            payload.error || 'Something went wrong sending your message. Please email me directly instead.',
+            'error',
+          );
+        }
+      } catch {
+        resetTurnstile();
+        setStatus('Network problem — your message did not send. Please try again or email me directly.', 'error');
+      } finally {
+        sending = false;
+        submitBtn.disabled = false;
+        submitBtn.textContent = originalLabel;
+        form.removeAttribute('aria-busy');
+      }
+    });
+  }
+</script>

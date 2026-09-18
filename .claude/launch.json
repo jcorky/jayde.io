@@ -1,0 +1,10 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "jaydeio-pages",
+      "url": "http://localhost:8799",
+      "port": 8799
+    }
+  ]
+}

@@ -1,0 +1,257 @@
+---
+import { Image, Picture } from 'astro:assets';
+import SiteLayout from '../layouts/SiteLayout.astro';
+import { SITE, BIO_PARAGRAPHS, PAGE_META } from '../data/site';
+import { graph, websiteSchema, personSchema } from '../data/schema';
+
+import saturn from '../assets/images/saturn.jpg';
+import portrait from '../assets/images/portrait.jpg';
+import containerShip from '../assets/images/container-ship.jpg';
+
+const jsonLd = graph([websiteSchema(), personSchema()]);
+---
+
+<SiteLayout title={PAGE_META.home.title} description={PAGE_META.home.description} path="/" jsonLd={jsonLd}>
+  <!-- 1 · Hero: Saturn + JAYDE.IO wordmark -->
+  <section class="hero" aria-labelledby="site-heading">
+    <div class="hero-stage">
+      <Picture
+        src={saturn}
+        alt=""
+        formats={['avif', 'webp']}
+        widths={[420, 640, 900, 1200]}
+        sizes="(max-width: 720px) 78vw, 56vw"
+        loading="eager"
+        fetchpriority="high"
+        class="hero-saturn"
+      />
+      <img
+        class="hero-wordmark"
+        src="/img/wordmark.png"
+        width="2192"
+        height="362"
+        alt=""
+        decoding="async"
+      />
+      <h1 id="site-heading" class="hero-identity">{SITE.identityLine}</h1>
+    </div>
+  </section>
+
+  <!-- 2 · Action band -->
+  <section class="action-band" aria-label="Explore">
+    <div class="container action-grid">
+      <a class="action-tile" href="/blog">
+        <img class="action-icon pixelated" src="/img/flame.png" width="180" height="145" alt="" />
+        <span class="action-label">Projects</span>
+      </a>
+      <a class="action-tile" href="/contact">
+        <img class="action-icon pixelated" src="/img/heart.png" width="252" height="218" alt="" />
+        <span class="action-label">Get in touch</span>
+      </a>
+    </div>
+  </section>
+
+  <!-- 3 · Who I Am -->
+  <section class="bio section" aria-labelledby="bio-heading">
+    <div class="container bio-grid">
+      <div class="bio-portrait">
+        <Image
+          src={portrait}
+          alt="Jayde Cork"
+          widths={[240, 360, 480]}
+          sizes="(max-width: 720px) 200px, 300px"
+          loading="lazy"
+          class="portrait-img"
+        />
+      </div>
+      <div class="bio-copy">
+        <h2 id="bio-heading">Who I Am</h2>
+        {BIO_PARAGRAPHS.map((p) => <p>{p}</p>)}
+        <p class="bio-cta">
+          <a href="/resume">View résumé →</a>
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- 4 · Container-ship photograph -->
+  <Picture
+    src={containerShip}
+    alt="A container ship loaded with stacked shipping containers at a port at night."
+    formats={['avif', 'webp']}
+    widths={[768, 1200, 1600, 2400]}
+    sizes="100vw"
+    loading="lazy"
+    class="ship-band"
+  />
+</SiteLayout>
+
+<style>
+  /* 1 · Hero */
+  .hero {
+    background: var(--c-black);
+    padding-block: clamp(1.5rem, 5vw, 3rem);
+  }
+  .hero-stage {
+    position: relative;
+    max-width: 1120px;
+    margin-inline: auto;
+    padding-inline: var(--gutter);
+    min-height: clamp(360px, 52vw, 560px);
+  }
+  .hero-saturn {
+    position: absolute;
+    top: 0;
+    left: var(--gutter);
+    width: 56%;
+    height: auto;
+    filter: drop-shadow(0 10px 40px rgba(0, 0, 0, 0.6));
+  }
+  .hero-wordmark {
+    position: absolute;
+    right: var(--gutter);
+    bottom: 12%;
+    width: 58%;
+    height: auto;
+  }
+  .hero-identity {
+    position: absolute;
+    left: var(--gutter);
+    bottom: 0;
+    margin: 0;
+    font-size: clamp(0.95rem, 1.6vw, 1.35rem);
+    letter-spacing: 0.14em;
+    color: var(--c-wordmark-gray);
+    font-weight: 700;
+  }
+
+  @media (max-width: 720px) {
+    .hero-stage {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 1.25rem;
+      min-height: 0;
+    }
+    .hero-saturn,
+    .hero-wordmark,
+    .hero-identity {
+      position: static;
+      width: auto;
+    }
+    .hero-saturn {
+      width: min(78vw, 360px);
+    }
+    .hero-wordmark {
+      width: min(92vw, 460px);
+    }
+    .hero-identity {
+      text-align: center;
+    }
+  }
+
+  /* 2 · Action band */
+  .action-band {
+    background: var(--c-band);
+    padding-block: clamp(2.25rem, 6vw, 4.25rem);
+  }
+  .action-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: clamp(1.5rem, 5vw, 4rem);
+  }
+  .action-tile {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1rem;
+    text-decoration: none;
+    color: var(--c-text);
+    padding: 1.25rem 0.5rem;
+    border-radius: var(--radius);
+    transition: transform 0.15s var(--ease), background 0.15s var(--ease);
+  }
+  .action-tile:hover {
+    background: rgba(255, 255, 255, 0.04);
+    transform: translateY(-2px);
+  }
+  .action-icon {
+    height: clamp(64px, 9vw, 96px);
+    width: auto;
+  }
+  .action-label {
+    font-family: var(--font-display);
+    text-transform: uppercase;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    font-size: clamp(1.4rem, 3vw, 2.1rem);
+  }
+
+  /* 3 · Who I Am */
+  .bio {
+    background: var(--c-black);
+  }
+  .bio-grid {
+    display: grid;
+    grid-template-columns: minmax(180px, 260px) 1fr;
+    gap: clamp(1.75rem, 5vw, 4rem);
+    align-items: start;
+  }
+  .bio-portrait {
+    position: sticky;
+    top: 1.5rem;
+    width: 100%;
+    max-width: 260px;
+    aspect-ratio: 1 / 1;
+    border-radius: 50%;
+    overflow: hidden;
+    border: 3px solid var(--c-hairline);
+  }
+  .bio-portrait :global(img.portrait-img) {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+  .bio-copy h2 {
+    font-size: var(--fs-h2);
+    margin-bottom: 1.25rem;
+  }
+  .bio-copy p + p {
+    margin-top: 1rem;
+  }
+  .bio-cta {
+    margin-top: 1.75rem;
+  }
+  .bio-cta a {
+    display: inline-block;
+    font-family: var(--font-display);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    font-size: 1.05rem;
+    text-decoration: none;
+    border-bottom: 2px solid var(--c-pixel-yellow);
+    padding-bottom: 0.15rem;
+  }
+
+  @media (max-width: 640px) {
+    .bio-grid {
+      grid-template-columns: 1fr;
+      justify-items: center;
+      text-align: left;
+    }
+    .bio-portrait {
+      position: static;
+      width: min(60vw, 220px);
+    }
+  }
+
+  /* 4 · Ship band */
+  .ship-band {
+    display: block;
+    width: 100%;
+    height: clamp(160px, 24vw, 300px);
+    object-fit: cover;
+    object-position: 50% 60%;
+  }
+</style>

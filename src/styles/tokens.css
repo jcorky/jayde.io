@@ -1,0 +1,57 @@
+/* ── Design tokens ───────────────────────────────────────────────────────────
+   Colors taken verbatim from the Jayde.IO reference palette. The site has a
+   single, intentionally dark maritime/space identity, so there is no light
+   theme to toggle. */
+:root {
+  /* Surfaces */
+  --c-black: #000000;          /* home hero */
+  --c-band: #141414;           /* home action band */
+  --c-contact-bg: #151111;     /* contact + empty-page background */
+  --c-nav: #020201;            /* navigation near-black */
+  --c-olive: #242b17;          /* blog surface */
+  --c-panama-panel: #4a4f42;   /* panama content panel */
+
+  /* Text */
+  --c-text: #ffffff;
+  --c-wordmark-gray: #bfc1c0;
+  --c-muted: #b7b3b0;          /* muted control colour */
+
+  /* Contact panel */
+  --c-cream: #f4ebdd;
+  --c-cream-text: #312f2c;
+
+  /* Pixel-art accents */
+  --c-pixel-red: #ff3535;
+  --c-pixel-orange: #ffad26;
+  --c-pixel-yellow: #ffe66d;
+  --c-pixel-cream: #fff4c5;
+
+  /* Derived / functional */
+  --c-focus: #ffe66d;                       /* keyboard focus ring */
+  --c-hairline: rgba(255, 255, 255, 0.14);
+  --c-link-underline: rgba(255, 255, 255, 0.45);
+
+  /* Typography */
+  --font-display: 'Antonio', 'Arial Narrow', 'Helvetica Neue', sans-serif;
+  --font-body: 'Public Sans', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  --font-nav: Arial, Helvetica, 'Public Sans', sans-serif;
+
+  /* Fluid type scale */
+  --fs-hero: clamp(3.5rem, 9vw, 7rem);           /* interior display headings ~56–112px */
+  --fs-h2: clamp(1.9rem, 4vw, 2.75rem);
+  --fs-h3: clamp(1.3rem, 2.4vw, 1.7rem);
+  --fs-body: clamp(1.075rem, 1rem + 0.45vw, 1.35rem);   /* ~18–22px */
+  --fs-small: clamp(0.85rem, 0.8rem + 0.2vw, 0.95rem);
+  --lh-body: 1.6;
+
+  /* Layout */
+  --content-max: 1180px;
+  --gutter: clamp(1rem, 5vw, 2.75rem);
+  --banner-h: clamp(150px, 26vw, 210px);   /* interior photo banner */
+  --nav-h: 52px;
+
+  /* Shape / motion */
+  --radius: 22px;
+  --radius-sm: 12px;
+  --ease: cubic-bezier(0.22, 0.61, 0.36, 1);
+}

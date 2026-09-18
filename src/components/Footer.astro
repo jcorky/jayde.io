@@ -1,0 +1,43 @@
+---
+import { SITE } from '../data/site';
+const year = 2026;
+---
+
+<footer class="site-footer">
+  <div class="container footer-inner">
+    <p class="footer-brand">Jayde.IO</p>
+    <p class="footer-contact">
+      <a href={`mailto:${SITE.email}`}>{SITE.email}</a>
+    </p>
+    <p class="footer-legal">© {year} Jayde Cork</p>
+  </div>
+</footer>
+
+<style>
+  .site-footer {
+    background: var(--c-black);
+    border-top: 1px solid var(--c-hairline);
+    padding-block: clamp(1.75rem, 4vw, 2.75rem);
+  }
+  .footer-inner {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.35rem;
+    text-align: center;
+  }
+  .footer-brand {
+    font-family: var(--font-display);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    font-size: 1.15rem;
+  }
+  .footer-contact a {
+    color: var(--c-text);
+    font-size: var(--fs-small);
+  }
+  .footer-legal {
+    color: var(--c-muted);
+    font-size: 0.8rem;
+  }
+</style>

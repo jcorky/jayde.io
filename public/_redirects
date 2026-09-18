@@ -1,0 +1,5 @@
+# Legacy Canva route (permanent). /page-5 is intentionally NOT redirected — it is
+# retired and should return the real 404. Host-level redirects (www + *.pages.dev
+# -> https://jayde.io) are configured as Cloudflare Redirect Rules, not here
+# (the _redirects file matches on path only, not hostname). See README.
+/page-3   /contact   301
