@@ -11,6 +11,15 @@ const jsonLd = graph([websiteSchema(), personSchema()]);
 ---
 
 <SiteLayout title={PAGE_META.home.title} description={PAGE_META.home.description} path="/" jsonLd={jsonLd}>
+  <!-- Preload the hero poster (the LCP element) so it paints fast. -->
+  <link
+    slot="head"
+    rel="preload"
+    as="image"
+    href="/media/jayde-header-poster.jpg"
+    fetchpriority="high"
+  />
+
   <!-- 1 · Hero: full-bleed looping port video with the identity line overlaid -->
   <section class="hero" aria-labelledby="site-heading">
     <video

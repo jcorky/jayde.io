@@ -32,6 +32,7 @@ const hasBanner = Astro.slots.has('banner');
 <html lang={SITE.locale}>
   <head>
     <SEO title={title} description={description} path={path} noindex={noindex} jsonLd={jsonLd} ogType={ogType} />
+    <slot name="head" />
   </head>
   <body>
     <a class="skip-link" href="#main">Skip to content</a>
