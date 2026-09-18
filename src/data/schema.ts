@@ -28,6 +28,8 @@ export function personSchema() {
       'Terminal operations',
       'Database and integration troubleshooting',
     ],
+    // Verified profiles the owner provided — links this site to the same entity.
+    sameAs: ['https://www.linkedin.com/in/jaydecork', 'https://www.instagram.com/jcorky'],
   };
 }
 
