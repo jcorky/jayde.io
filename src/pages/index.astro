@@ -11,7 +11,7 @@ const jsonLd = graph([websiteSchema(), personSchema()]);
 ---
 
 <SiteLayout title={PAGE_META.home.title} description={PAGE_META.home.description} path="/" jsonLd={jsonLd}>
-  <!-- 1 · Hero: Saturn + JAYDE.IO wordmark -->
+  <!-- 1 · Hero: full-bleed looping port video with the identity line overlaid -->
   <section class="hero" aria-labelledby="site-heading">
     <video
       class="hero-video"
@@ -28,14 +28,6 @@ const jsonLd = graph([websiteSchema(), personSchema()]);
     </video>
     <div class="hero-scrim" aria-hidden="true"></div>
     <div class="hero-stage">
-      <img
-        class="hero-wordmark"
-        src="/img/wordmark.png"
-        width="2192"
-        height="362"
-        alt=""
-        decoding="async"
-      />
       <h1 id="site-heading" class="hero-identity">{SITE.identityLine}</h1>
     </div>
   </section>
@@ -122,19 +114,13 @@ const jsonLd = graph([websiteSchema(), personSchema()]);
     margin-inline: auto;
     padding-inline: var(--gutter);
   }
-  .hero-wordmark {
-    position: absolute;
-    right: var(--gutter);
-    bottom: 16%;
-    width: 52%;
-    height: auto;
-    filter: drop-shadow(0 6px 22px rgba(0, 0, 0, 0.75));
-  }
   .hero-identity {
     position: absolute;
-    left: var(--gutter);
-    bottom: 9%;
+    right: var(--gutter);
+    bottom: 6%;
     margin: 0;
+    max-width: min(90%, 42ch);
+    text-align: right;
     font-size: clamp(0.95rem, 1.6vw, 1.35rem);
     letter-spacing: 0.14em;
     color: var(--c-text);
@@ -154,15 +140,10 @@ const jsonLd = graph([websiteSchema(), personSchema()]);
       gap: 0.75rem;
       padding-bottom: clamp(1.25rem, 5vw, 2rem);
     }
-    .hero-wordmark,
     .hero-identity {
       position: static;
       width: auto;
-    }
-    .hero-wordmark {
-      width: min(88vw, 420px);
-    }
-    .hero-identity {
+      max-width: none;
       text-align: center;
     }
   }
