@@ -13,7 +13,8 @@
 interface Env {
   // Secrets / bindings (runtime — never in source or client)
   TURNSTILE_SECRET_KEY?: string; // Turnstile secret
-  MAILER?: Fetcher; // service binding to the jayde-io-mailer Worker
+  MAILER?: Fetcher; // service binding to the jayde-io-mailer Worker (preferred)
+  MAILER_URL?: string; // OR the mailer Worker's URL (used when no service binding)
   MAILER_KEY?: string; // shared key the mailer Worker checks
   // Server configuration
   ALLOWED_HOSTNAMES?: string; // comma-separated
@@ -76,7 +77,7 @@ export const onRequestPost: PagesFunction<Env> = async (context) => {
 
   // 1 · Configuration must be present — never fake success.
   const TURNSTILE_SECRET_KEY = env.TURNSTILE_SECRET_KEY;
-  if (!TURNSTILE_SECRET_KEY || !env.MAILER || !env.MAILER_KEY) {
+  if (!TURNSTILE_SECRET_KEY || !env.MAILER_KEY || (!env.MAILER && !env.MAILER_URL)) {
     return fail(500, 'The contact form is not fully configured yet. Please email directly for now.');
   }
   const allowedHosts = new Set(
@@ -184,13 +185,18 @@ export const onRequestPost: PagesFunction<Env> = async (context) => {
   // 9 · Hand the validated message to the companion mailer Worker, which sends it
   //     via Cloudflare Email Routing. Recipient/sender are fixed inside that Worker.
   const submittedAt = new Date().toISOString();
+  const mailerInit: RequestInit = {
+    method: 'POST',
+    headers: { 'content-type': 'application/json', 'x-mailer-key': env.MAILER_KEY },
+    body: JSON.stringify({ name, email, message, submittedAt }),
+  };
   let mailRes: Response;
   try {
-    mailRes = await env.MAILER.fetch('https://jayde-io-mailer/notify', {
-      method: 'POST',
-      headers: { 'content-type': 'application/json', 'x-mailer-key': env.MAILER_KEY },
-      body: JSON.stringify({ name, email, message, submittedAt }),
-    });
+    // Prefer the service binding (data stays internal); fall back to the mailer
+    // Worker's key-protected URL when no binding is configured.
+    mailRes = env.MAILER
+      ? await env.MAILER.fetch('https://jayde-io-mailer/notify', mailerInit)
+      : await fetch(env.MAILER_URL as string, mailerInit);
   } catch {
     return fail(502, 'Your message could not be sent right now. Please try again or email directly.');
   }

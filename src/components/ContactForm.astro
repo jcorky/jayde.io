@@ -1,9 +1,10 @@
 ---
 import { SITE } from '../data/site';
 
-// Public build-time site key. Falls back to Cloudflare's always-passing TEST key
-// so the widget works in local dev before a real key is configured.
-const siteKey = import.meta.env.PUBLIC_TURNSTILE_SITE_KEY ?? '1x00000000000000000000AA';
+// Public build-time site key (Turnstile site keys are public). Defaults to the
+// production key; local dev overrides it with the always-passing TEST key via
+// .env so the widget works on localhost.
+const siteKey = import.meta.env.PUBLIC_TURNSTILE_SITE_KEY || '0x4AAAAAAE8ICAQLeFkEyVFF';
 ---
 
 <!-- Turnstile client script -->
