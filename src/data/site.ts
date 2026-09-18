@@ -24,6 +24,13 @@ export const NAV: { label: string; href: string }[] = [
   { label: 'Contact', href: '/contact' },
 ];
 
+// Owner-provided profiles. Used for visible footer links and the Person schema's
+// sameAs (entity association). Add real profiles only — never invent one.
+export const SOCIALS: { label: string; href: string }[] = [
+  { label: 'LinkedIn', href: 'https://www.linkedin.com/in/jaydecork' },
+  { label: 'Instagram', href: 'https://www.instagram.com/jcorky' },
+];
+
 // Home biography — the owner's verified copy, punctuation lightly corrected.
 export const BIO_PARAGRAPHS: string[] = [
   "I'm Jayde Cork, a Technical Trainer who makes complex enterprise software click for the people who use it.",

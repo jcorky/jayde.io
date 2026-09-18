@@ -2,7 +2,7 @@
 // JSON-LD builders. Every field maps to visible, verified content — no invented
 // social profiles, awards, certifications, reviews, employer details, or dates.
 // ─────────────────────────────────────────────────────────────────────────────
-import { SITE } from './site';
+import { SITE, SOCIALS } from './site';
 
 const O = SITE.origin;
 const PERSON_ID = `${O}/#person`;
@@ -29,7 +29,7 @@ export function personSchema() {
       'Database and integration troubleshooting',
     ],
     // Verified profiles the owner provided — links this site to the same entity.
-    sameAs: ['https://www.linkedin.com/in/jaydecork', 'https://www.instagram.com/jcorky'],
+    sameAs: SOCIALS.map((s) => s.href),
   };
 }
 
