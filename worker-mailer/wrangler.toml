@@ -21,8 +21,9 @@ compatibility_date = "2026-09-01"
 
 [[send_email]]
 name = "SEND_EMAIL"
-destination_address = "Jayde.cork@gmail.com"
+# Must match the verified Email Routing destination EXACTLY (case-sensitive).
+destination_address = "jayde.cork@gmail.com"
 
 [vars]
-NOTIFY_TO = "Jayde.cork@gmail.com"
+NOTIFY_TO = "jayde.cork@gmail.com"
 NOTIFY_FROM = "website@jayde.io"
