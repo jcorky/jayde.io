@@ -47,7 +47,7 @@ export function profilePageSchema() {
     '@type': 'ProfilePage',
     '@id': `${O}/resume#profilepage`,
     url: `${O}/resume`,
-    name: 'Jayde Cork — Résumé',
+    name: 'Jayde Cork — Resume',
     inLanguage: 'en',
     isPartOf: { '@id': WEBSITE_ID },
     mainEntity: { '@id': PERSON_ID },

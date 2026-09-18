@@ -58,8 +58,8 @@ const jsonLd = graph([websiteSchema(), personSchema()]);
         <Image
           src={portrait}
           alt="Jayde Cork"
-          widths={[240, 360, 480]}
-          sizes="(max-width: 720px) 200px, 300px"
+          widths={[320, 480, 640]}
+          sizes="(max-width: 640px) 264px, 312px"
           loading="lazy"
           class="portrait-img"
         />
@@ -68,7 +68,7 @@ const jsonLd = graph([websiteSchema(), personSchema()]);
         <h2 id="bio-heading">Who I Am</h2>
         {BIO_PARAGRAPHS.map((p) => <p>{p}</p>)}
         <p class="bio-cta">
-          <a href="/resume">View résumé →</a>
+          <a href="/resume">View resume →</a>
         </p>
       </div>
     </div>
@@ -193,15 +193,14 @@ const jsonLd = graph([websiteSchema(), personSchema()]);
   }
   .bio-grid {
     display: grid;
-    grid-template-columns: minmax(180px, 260px) 1fr;
+    grid-template-columns: minmax(200px, 312px) 1fr;
     gap: clamp(1.75rem, 5vw, 4rem);
     align-items: start;
   }
   .bio-portrait {
-    position: sticky;
-    top: 1.5rem;
+    position: static;
     width: 100%;
-    max-width: 260px;
+    max-width: 312px;
     aspect-ratio: 1 / 1;
     border-radius: 50%;
     overflow: hidden;
@@ -241,8 +240,7 @@ const jsonLd = graph([websiteSchema(), personSchema()]);
       text-align: left;
     }
     .bio-portrait {
-      position: static;
-      width: min(60vw, 220px);
+      width: min(72vw, 264px);
     }
   }
 

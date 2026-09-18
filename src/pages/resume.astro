@@ -12,7 +12,7 @@ const jsonLd = graph([
   profilePageSchema(),
   breadcrumbSchema([
     { name: 'Home', path: '/' },
-    { name: 'Résumé', path: '/resume' },
+    { name: 'Resume', path: '/resume' },
   ]),
 ]);
 
@@ -31,14 +31,14 @@ const hasPdf = Boolean(RESUME_DRAFTS.downloadablePdf);
     slot="banner"
     image={contactShip}
     alt="A cargo ship and harbour cranes in silhouette at dusk."
-    title="Résumé"
+    title="Resume"
     focal="50% 45%"
   />
 
   <div class="container section">
     <div class="resume-actions no-print">
       <button id="print-resume" type="button" class="btn-print">Print / Save as PDF</button>
-      {hasPdf && <a class="btn-download" href={RESUME_DRAFTS.downloadablePdf} download>Download résumé (PDF)</a>}
+      {hasPdf && <a class="btn-download" href={RESUME_DRAFTS.downloadablePdf} download>Download resume (PDF)</a>}
     </div>
 
     <article class="resume-doc">

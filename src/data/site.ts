@@ -20,7 +20,7 @@ export const NAV: { label: string; href: string }[] = [
   { label: 'Home', href: '/' },
   { label: 'Blog', href: '/blog' },
   { label: 'Skills', href: '/skills' },
-  { label: 'Résumé', href: '/resume' },
+  { label: 'Resume', href: '/resume' },
   { label: 'Contact', href: '/contact' },
 ];
 
@@ -60,7 +60,7 @@ export const SKILLS: { title: string; body: string }[] = [
   },
 ];
 
-// Résumé — verified content only. Employment dates and any credential fields are
+// Resume — verified content only. Employment dates and any credential fields are
 // left as editable drafts (see RESUME_DRAFTS) and are NOT rendered in production.
 export const RESUME = {
   name: SITE.owner,
@@ -93,7 +93,7 @@ export const RESUME = {
 };
 
 // Owner-editable draft fields. These are deliberately empty and are only shown
-// in a clearly-marked draft preview (never on the production résumé). Fill them
+// in a clearly-marked draft preview (never on the production resume). Fill them
 // in with verified facts, then surface them in resume.astro when ready.
 export const RESUME_DRAFTS = {
   employmentDates: '', // e.g. "2023 – present"
@@ -128,9 +128,9 @@ export const PAGE_META = {
       "Explore Jayde Cork's experience in technical training, Navis N4, Master Terminal, logistics operations, and enterprise software support.",
   },
   resume: {
-    title: 'Jayde Cork — Résumé | Jayde.IO',
+    title: 'Jayde Cork — Resume | Jayde.IO',
     description:
-      "View Jayde Cork's résumé, including technical training at Kaleris and a background in logistics and enterprise software support.",
+      "View Jayde Cork's resume, including technical training at Kaleris and a background in logistics and enterprise software support.",
   },
   contact: {
     title: 'Contact Jayde Cork | Jayde.IO',

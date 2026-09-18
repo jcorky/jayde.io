@@ -27,7 +27,7 @@ Panama page, and the cream contact panel.
 ```
 astro.config.mjs        # static site, trailingSlash: 'never', build.format: 'file'
 src/
-  data/site.ts          # ALL content: nav, biography, skills, résumé, per-page SEO, sitemap routes
+  data/site.ts          # ALL content: nav, biography, skills, resume, per-page SEO, sitemap routes
   data/schema.ts        # JSON-LD builders (Person, WebSite, ProfilePage, BreadcrumbList)
   styles/               # tokens.css (palette + type scale), global.css, print.css
   layouts/SiteLayout.astro
@@ -65,10 +65,10 @@ All copy lives in **`src/data/site.ts`** — edit there, never in the page templ
 
 - **Biography** — `BIO_PARAGRAPHS` (array of paragraphs, shown on the home "Who I Am" section).
 - **Skills** — `SKILLS` (title + body per card on `/skills`).
-- **Résumé** — `RESUME` (summary, experience, earlier-career, core skills). Verified facts only.
+- **Resume** — `RESUME` (summary, experience, earlier-career, core skills). Verified facts only.
   - Draft/optional fields (employment dates, education, certifications, profile URLs, achievements,
     a real PDF path) live in **`RESUME_DRAFTS`** and are intentionally **not** rendered until filled in
-    with verified content. See *Missing résumé details* below.
+    with verified content. See *Missing resume details* below.
 - **Per-page titles/descriptions** — `PAGE_META`.
 - **Sitemap** — `SITEMAP_ROUTES` (path + `lastmod` + priority). Update `lastmod` only when a page's
   content actually changes.
@@ -96,7 +96,7 @@ When a real Seaboard article exists, make its card a link and replace the low-re
 | `/blog` | Blog / project stories | ✅ |
 | `/panama` | Panama 2026 (placeholder) | ❌ `noindex,follow`, excluded from sitemap |
 | `/skills` | Skills | ✅ |
-| `/resume` | Résumé | ✅ |
+| `/resume` | Resume | ✅ |
 | `/contact` | Contact form | ✅ |
 | `/404.html` | Genuine 404 | ❌ |
 | `POST /api/contact` | Email endpoint (Pages Function) | ❌ |
@@ -170,8 +170,8 @@ address. Until then, treat inbox delivery as unverified.
 
 - Unique `<title>` + description per page; self-referencing canonicals on `https://jayde.io`.
 - Open Graph + Twitter cards; share image `public/og.png` (1200×630, with alt text).
-- JSON-LD: `Person`, `WebSite`, `ProfilePage` (résumé), `BreadcrumbList`. No invented profiles/awards/dates.
-- `sitemap.xml` — Home, Blog, Skills, Résumé, Contact only (Panama/404/API excluded).
+- JSON-LD: `Person`, `WebSite`, `ProfilePage` (resume), `BreadcrumbList`. No invented profiles/awards/dates.
+- `sitemap.xml` — Home, Blog, Skills, Resume, Contact only (Panama/404/API excluded).
 - `robots.txt` allows all + points to the sitemap; noindex pages stay crawlable.
 
 **After deploy:**
@@ -215,7 +215,7 @@ headers (incl. `Cache-Control: no-store`) in code.
 
 **Checks run** (see also the commit history and `test/`):
 - `astro check` — 0 errors. `npm test` — contact Function unit tests pass.
-- Every page built to static HTML; all body/résumé text present in the initial HTML.
+- Every page built to static HTML; all body/resume text present in the initial HTML.
 - Routing verified via Wrangler: all pages 200; `/page-3 → /contact` (301); `/page-5` → 404; unknown → 404;
   `/contact.html` → `/contact`.
 - Contact endpoint: validation, honeypot, origin, Turnstile, provider-failure, and end-to-end browser
@@ -233,7 +233,7 @@ headers (incl. `Cache-Control: no-store`) in code.
 - Pixel-art **flame** and **heart** are extracted from the source as transparent PNGs (not emoji).
 
 ### Missing / owner-only items
-- **Résumé drafts:** employment dates, education, certifications, professional-profile URLs (e.g.
+- **Resume drafts:** employment dates, education, certifications, professional-profile URLs (e.g.
   LinkedIn), and achievements are left blank in `RESUME_DRAFTS` and not shown. Fill them with verified
   facts to surface them; add a real PDF only if generated from the same content.
 - **Seaboard image** is the live site's low-res `201×251` file (documented as such). Replace with an

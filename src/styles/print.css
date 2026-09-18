@@ -1,5 +1,5 @@
 /* ── Print styles ────────────────────────────────────────────────────────────
-   Loaded globally but scoped to @media print. Primarily shapes the résumé into
+   Loaded globally but scoped to @media print. Primarily shapes the resume into
    a clean, ink-friendly document; also keeps any other page printable. */
 @media print {
   :root {
