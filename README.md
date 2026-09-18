@@ -1,8 +1,9 @@
 # Jayde.IO
 
 Personal website for **Jayde Cork — Technical Trainer**. A static [Astro](https://astro.build) site
-deployed to **Cloudflare Pages**, with a serverless contact endpoint (Cloudflare Pages Function →
-[Resend](https://resend.com)) protected by [Cloudflare Turnstile](https://developers.cloudflare.com/turnstile/).
+deployed to **Cloudflare Pages**, with a serverless contact endpoint (Cloudflare Pages Function → a
+companion Worker → **Cloudflare Email Routing**) protected by
+[Cloudflare Turnstile](https://developers.cloudflare.com/turnstile/). No third-party email service.
 
 It recreates the original Canva design in maintainable code: the dark maritime/space identity, the
 Saturn + halftone `JAYDE.IO` wordmark, pixel-art flame/heart, port photography, olive Blog surface,
@@ -18,7 +19,7 @@ Panama page, and the cream contact panel.
 | Node.js | `22.16.0` | Pinned in `.nvmrc` / `.node-version`; Astro 7 needs ≥ 22.12 |
 | Fonts | `@fontsource/antonio`, `@fontsource/public-sans` | Self-hosted, bundled into `dist/` |
 | Images | `sharp` | Build-time AVIF/WebP responsive derivatives via `<Image>`/`<Picture>` |
-| Email | Resend HTTPS API | Called server-side from the Pages Function (no SDK) |
+| Email | Cloudflare Email Routing | Sent by a companion Worker; free, no third-party account |
 | Anti-spam | Cloudflare Turnstile | Client widget + server-side siteverify |
 | Local runtime | `wrangler` `^4.40` | `wrangler pages dev` runs the static build **and** the Function |
 
@@ -34,9 +35,11 @@ src/
   components/           # SEO, Header (nav + mobile menu), Footer, Banner, ContactForm
   assets/images/*.jpg   # source photos — optimised by Astro at build
   pages/                # index, blog, panama, skills, resume, contact, 404, sitemap.xml.ts, robots.txt.ts
-functions/api/contact.ts# POST /api/contact — validation, Turnstile, Resend, rate limit
-public/                 # favicon/OG/manifest, pixel art (img/), _redirects, _headers, _routes.json
-test/contact.test.ts    # unit tests for the contact Function (mocked fetch)
+functions/api/contact.ts# POST /api/contact — validation, Turnstile, rate limit, calls the mailer
+worker-mailer/          # tiny companion Worker: sends the email via Email Routing
+public/                 # favicon/OG/manifest, pixel art (img/), media/ (hero video), _redirects, _headers, _routes.json
+media-source/           # optimised archive GIF of the hero animation (not deployed)
+test/contact.test.ts    # unit tests for the contact Function (mocked mailer + siteverify)
 ```
 
 ## Local development
@@ -116,29 +119,37 @@ When a real Seaboard article exists, make its card a link and replace the low-re
 Never commit real values. Set these in **Cloudflare Pages → Settings → Environment variables**
 (Production and Preview separately). See `.env.example` for descriptions.
 
-| Name | Scope | Purpose |
+| Name | Where | Purpose |
 | --- | --- | --- |
-| `PUBLIC_TURNSTILE_SITE_KEY` | Build-time, public | Turnstile widget site key (baked into the static form) |
-| `RESEND_API_KEY` | Runtime secret | Resend API key (encrypted) |
-| `TURNSTILE_SECRET_KEY` | Runtime secret | Turnstile secret (encrypted) |
-| `CONTACT_TO` | Runtime | Fixed recipient — `Jayde.cork@gmail.com` |
-| `CONTACT_FROM` | Runtime | Verified sender — `Jayde.IO <website@jayde.io>` |
-| `ALLOWED_HOSTNAMES` | Runtime | Comma list for origin + Turnstile hostname checks |
-| `RATE_LIMIT` | Runtime binding *(optional)* | KV namespace to enable a best-effort per-IP rate limiter |
+| `PUBLIC_TURNSTILE_SITE_KEY` | Pages, build-time (public) | Turnstile widget site key (baked into the static form) |
+| `TURNSTILE_SECRET_KEY` | Pages, runtime secret | Turnstile secret (encrypted) |
+| `MAILER_KEY` | Pages **and** the mailer Worker, secret | Shared key so only this Function can call the mailer |
+| `ALLOWED_HOSTNAMES` | Pages, runtime | Comma list for origin + Turnstile hostname checks |
+| `RATE_LIMIT` | Pages binding *(optional)* | KV namespace to enable a best-effort per-IP rate limiter |
+| `MAILER` | Pages **service binding** | Points at the `jayde-io-mailer` Worker (set in the dashboard) |
 
-> The recipient and sender are **fixed on the server**. A browser field can never choose them.
+> The recipient (`Jayde.cork@gmail.com`) and sender (`website@jayde.io`) are **fixed in
+> `worker-mailer/wrangler.toml`**, not in any browser field or Pages env var. The Email Routing send
+> binding is locked to that one destination, so the form can only ever email the operator.
 
-### Resend sending-domain setup (required for real delivery)
+### Email delivery setup (Cloudflare Email Routing — no third-party account)
 
-1. Add domain **`jayde.io`** in Resend → **Domains**.
-2. Create the DNS records Resend shows (copy the exact values — the SES region varies):
-   - **MX** on `send` → `feedback-smtp.<region>.amazonses.com` (priority 10)
-   - **TXT (SPF)** on `send` → `v=spf1 include:amazonses.com ~all`
-   - **TXT (DKIM)** on `resend._domainkey` → `p=…`
-   - *(Recommended)* **TXT (DMARC)** on `_dmarc` → `v=DMARC1; p=none;`
-   If DNS is on Cloudflare, set these records to **DNS only** (grey cloud).
-3. Wait for Resend to mark the domain **Verified**, then the form can send from `website@jayde.io`.
-   Gmail is only the *destination*; this does **not** use Jayde's Gmail password.
+1. Put `jayde.io` on Cloudflare (add it as a site, update nameservers at your registrar).
+2. **Email → Email Routing → Enable.** Cloudflare adds the required MX/SPF records automatically.
+3. **Email Routing → Destination addresses → Add `Jayde.cork@gmail.com`**, then click the verify
+   link Cloudflare emails you. (This is the address the form delivers to.)
+4. Deploy the companion Worker that actually sends the mail:
+   ```bash
+   cd worker-mailer
+   npx wrangler deploy
+   npx wrangler secret put MAILER_KEY      # paste a long random string
+   ```
+5. In the **Pages** project → **Settings → Functions → Service bindings**, add a binding named
+   **`MAILER`** pointing at the **`jayde-io-mailer`** Worker.
+6. In the **Pages** project → **Settings → Variables and Secrets**, add **`MAILER_KEY`** as a secret
+   with the **same** value you set in step 4.
+
+Gmail is only the *destination*; this does **not** use Jayde's Gmail password.
 
 ### Turnstile setup
 
@@ -156,9 +167,9 @@ preview host. Put the **site key** in `PUBLIC_TURNSTILE_SITE_KEY` and the **secr
 | Field validation (name 1–100, email ≤254 + format, message 1–5000), CR/LF rejection | ✅ verified (unit tests) |
 | Honeypot, origin check, missing-config → 500 (no fake success) | ✅ verified |
 | Turnstile server-side siteverify + hostname/action enforcement | ✅ verified (test keys + unit tests) |
-| Resend request shape (endpoint, bearer auth, `reply_to` snake_case, idempotency key, escaped HTML) | ✅ verified (Resend returned a well-formed 401 for the placeholder key; success path unit-tested with mocked fetch) |
-| Provider/network failure → error state, **not** fake success; inputs preserved; no duplicate sends | ✅ verified end-to-end in the browser |
-| **Real send to Jayde.cork@gmail.com + inbox receipt + Reply-To** | ⏳ **UNVERIFIED** — requires a real `RESEND_API_KEY` and a verified `jayde.io` sending domain (owner-only). |
+| Message handed to the mailer with the shared key; name/email/message/time forwarded | ✅ verified (unit tests with a mocked mailer binding) |
+| Mailer/network failure → error state, **not** fake success; inputs preserved; no duplicate sends | ✅ verified |
+| **Real send to Jayde.cork@gmail.com + inbox receipt + Reply-To** | ⏳ **UNVERIFIED** — Email Routing + the mailer Worker + the `MAILER` service binding only run once deployed (owner-only setup; test on a preview). |
 
 **To complete verification:** add the real secrets + verified domain, deploy a preview, submit the form
 once, confirm the message arrives in the Gmail inbox/spam, and confirm **Reply** goes to the sender's
@@ -193,14 +204,16 @@ No ranking or indexing is guaranteed.
    - **Build command:** `npm run build`
    - **Build output directory:** `dist`
    - Node is pinned by `.nvmrc` (`22.16.0`).
-3. Add the environment variables/secrets from §3 (Production **and** Preview).
-4. `functions/api/contact.ts` deploys automatically; `public/_routes.json` scopes Functions to `/api/*`
+3. Add the Turnstile keys + `MAILER_KEY` + `ALLOWED_HOSTNAMES` from §3 (Production **and** Preview).
+4. Set up email delivery (§3 *Email delivery setup*): enable Email Routing, verify the destination,
+   deploy `worker-mailer/`, then add the **`MAILER`** service binding to the Pages project.
+5. `functions/api/contact.ts` deploys automatically; `public/_routes.json` scopes Functions to `/api/*`
    so all other paths are served as static assets.
-5. **Custom domain:** add `jayde.io` in Pages → *Custom domains* **before** changing DNS. If moving the
+6. **Custom domain:** add `jayde.io` in Pages → *Custom domains* **before** changing DNS. If moving the
    apex to Cloudflare nameservers, preserve existing unrelated records (especially **MX/mail**).
-6. **Single hostname:** add **Redirect Rules** to send `www.jayde.io` and `<project>.pages.dev` →
+7. **Single hostname:** add **Redirect Rules** to send `www.jayde.io` and `<project>.pages.dev` →
    `https://jayde.io` (preserving path + query). Keep branch previews working and excluded from indexing.
-7. **Rate limiting** (recommended): add a Cloudflare **Rate Limiting Rule** on `/api/contact`, or bind a
+8. **Rate limiting** (recommended): add a Cloudflare **Rate Limiting Rule** on `/api/contact`, or bind a
    KV namespace named `RATE_LIMIT` to enable the Function's built-in per-IP limiter.
 
 **Rollback:** Pages → Deployments → *Rollback* to a previous successful deployment.

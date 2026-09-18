@@ -1,0 +1,28 @@
+# Companion Worker that emails the contact-form message to the operator via
+# Cloudflare Email Routing. Pages Functions can't use the Email Routing send
+# binding, so this tiny Worker holds it and the Pages Function reaches it through
+# a service binding. It has no other dependency, so it deploys on its own in
+# seconds.
+#
+# Deploy (from this folder) and set the shared key:
+#   cd worker-mailer
+#   wrangler deploy
+#   wrangler secret put MAILER_KEY          # any long random string
+# Set the SAME value on the Pages project:
+#   wrangler pages secret put MAILER_KEY
+#
+# destination_address must be a verified Email Routing destination (verify
+# Jayde.cork@gmail.com once in the Cloudflare dashboard). The send binding can
+# only ever send there — so the Worker can email the operator and no one else.
+
+name = "jayde-io-mailer"
+main = "mailer.js"
+compatibility_date = "2026-09-01"
+
+[[send_email]]
+name = "SEND_EMAIL"
+destination_address = "Jayde.cork@gmail.com"
+
+[vars]
+NOTIFY_TO = "Jayde.cork@gmail.com"
+NOTIFY_FROM = "website@jayde.io"
