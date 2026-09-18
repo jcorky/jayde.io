@@ -4,7 +4,6 @@ import SiteLayout from '../layouts/SiteLayout.astro';
 import { SITE, BIO_PARAGRAPHS, PAGE_META } from '../data/site';
 import { graph, websiteSchema, personSchema } from '../data/schema';
 
-import saturn from '../assets/images/saturn.jpg';
 import portrait from '../assets/images/portrait.jpg';
 import containerShip from '../assets/images/container-ship.jpg';
 
@@ -15,16 +14,19 @@ const jsonLd = graph([websiteSchema(), personSchema()]);
   <!-- 1 · Hero: Saturn + JAYDE.IO wordmark -->
   <section class="hero" aria-labelledby="site-heading">
     <div class="hero-stage">
-      <Picture
-        src={saturn}
-        alt=""
-        formats={['avif', 'webp']}
-        widths={[420, 640, 900, 1200]}
-        sizes="(max-width: 720px) 78vw, 56vw"
-        loading="eager"
-        fetchpriority="high"
-        class="hero-saturn"
-      />
+      <video
+        class="hero-video"
+        poster="/media/jayde-header-poster.jpg"
+        width="1280"
+        height="720"
+        muted
+        loop
+        playsinline
+        preload="auto"
+        aria-hidden="true"
+      >
+        <source src="/media/jayde-header.mp4" type="video/mp4" />
+      </video>
       <img
         class="hero-wordmark"
         src="/img/wordmark.png"
@@ -99,13 +101,18 @@ const jsonLd = graph([websiteSchema(), personSchema()]);
     padding-inline: var(--gutter);
     min-height: clamp(360px, 52vw, 560px);
   }
-  .hero-saturn {
+  .hero-video {
     position: absolute;
     top: 0;
     left: var(--gutter);
     width: 56%;
     height: auto;
-    filter: drop-shadow(0 10px 40px rgba(0, 0, 0, 0.6));
+    aspect-ratio: 16 / 9;
+    object-fit: cover;
+    display: block;
+    background: var(--c-black);
+    border-radius: 10px;
+    box-shadow: 0 12px 44px rgba(0, 0, 0, 0.55);
   }
   .hero-wordmark {
     position: absolute;
@@ -133,14 +140,14 @@ const jsonLd = graph([websiteSchema(), personSchema()]);
       gap: 1.25rem;
       min-height: 0;
     }
-    .hero-saturn,
+    .hero-video,
     .hero-wordmark,
     .hero-identity {
       position: static;
       width: auto;
     }
-    .hero-saturn {
-      width: min(78vw, 360px);
+    .hero-video {
+      width: min(90vw, 480px);
     }
     .hero-wordmark {
       width: min(92vw, 460px);
@@ -253,3 +260,15 @@ const jsonLd = graph([websiteSchema(), personSchema()]);
     object-position: 50% 60%;
   }
 </style>
+
+<script>
+  // Play the looping header video only when motion is allowed; reduced-motion
+  // users (and anyone without JS) keep the static poster frame. muted +
+  // playsinline lets it start via JS without a user gesture.
+  const heroVideo = document.querySelector('.hero-video');
+  if (heroVideo instanceof HTMLVideoElement && !window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+    const play = () => heroVideo.play().catch(() => {});
+    if (heroVideo.readyState >= 2) play();
+    else heroVideo.addEventListener('loadeddata', play, { once: true });
+  }
+</script>
