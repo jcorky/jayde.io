@@ -15,7 +15,7 @@ interface Props {
 const { image, alt, title, focal = '50% 50%', eager = true } = Astro.props;
 ---
 
-<div class="banner">
+<header class="banner">
   <Picture
     src={image}
     alt={alt}
@@ -28,7 +28,7 @@ const { image, alt, title, focal = '50% 50%', eager = true } = Astro.props;
     class="banner-img"
   />
   <h1 class="banner-title">{title}</h1>
-</div>
+</header>
 
 <style>
   .banner {

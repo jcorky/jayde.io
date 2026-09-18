@@ -134,6 +134,13 @@ const siteKey = import.meta.env.PUBLIC_TURNSTILE_SITE_KEY ?? '1x0000000000000000
     outline-offset: 1px;
     border-color: #6b5a3e;
   }
+  /* The global focus ring is yellow, which is invisible on the cream panel.
+     Give the panel's button + link a dark ring (>=3:1 on #f4ebdd). */
+  .submit-btn:focus-visible,
+  .form-note a:focus-visible {
+    outline: 3px solid #6b5a3e;
+    outline-offset: 2px;
+  }
   .field-error {
     color: #8a1c11;
     font-size: 0.85rem;

@@ -1,12 +1,19 @@
 ---
 import { NAV } from '../data/site';
 
+interface Props {
+  /** Canonical page path from the layout. Astro.url.pathname is unreliable
+      here because build.format:'file' makes it "/blog.html" at prerender. */
+  path: string;
+}
+const { path } = Astro.props;
+
 // Current path, normalised without a trailing slash, for aria-current.
-const here = Astro.url.pathname.replace(/\/+$/, '') || '/';
+const here = path.replace(/\/+$/, '') || '/';
 const isCurrent = (href: string) => (href === '/' ? here === '/' : here === href || here.startsWith(href + '/'));
 ---
 
-<header class="site-header" data-site-header>
+<div class="site-header" data-site-header>
   <nav class="site-nav container" aria-label="Primary">
     <a class="nav-home-brand" href="/">
       <span class="visually-hidden">Jayde.IO — home</span>
@@ -36,7 +43,7 @@ const isCurrent = (href: string) => (href === '/' ? here === '/' : here === href
       }
     </ul>
   </nav>
-</header>
+</div>
 
 <style>
   .site-header {

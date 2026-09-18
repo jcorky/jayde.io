@@ -37,7 +37,7 @@ const hasBanner = Astro.slots.has('banner');
     <a class="skip-link" href="#main">Skip to content</a>
 
     {hasBanner && <slot name="banner" />}
-    <Header />
+    <Header path={path} />
 
     <main id="main" class={mainClass} tabindex="-1">
       <slot />

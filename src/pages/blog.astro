@@ -130,7 +130,11 @@ const jsonLd = graph([
   .story-card-overlay {
     position: absolute;
     inset: 0;
-    background: linear-gradient(90deg, rgba(0, 0, 0, 0.72) 0%, rgba(0, 0, 0, 0.35) 45%, rgba(0, 0, 0, 0.12) 100%);
+    /* Bottom-anchored dark scrim guarantees text contrast over any photo,
+       plus a left fade — the text sits bottom-left. */
+    background:
+      linear-gradient(0deg, rgba(0, 0, 0, 0.9) 0%, rgba(0, 0, 0, 0.55) 32%, rgba(0, 0, 0, 0.12) 62%, rgba(0, 0, 0, 0) 100%),
+      linear-gradient(90deg, rgba(0, 0, 0, 0.5) 0%, rgba(0, 0, 0, 0.18) 55%, rgba(0, 0, 0, 0) 100%);
   }
   .story-card-text {
     position: absolute;
@@ -147,10 +151,12 @@ const jsonLd = graph([
     font-weight: 700;
     font-size: clamp(1.4rem, 3.2vw, 2rem);
     line-height: 1.05;
+    text-shadow: 0 1px 3px rgba(0, 0, 0, 0.85);
   }
   .story-card-sub {
     font-size: var(--fs-small);
     color: #f2f2f0;
+    text-shadow: 0 1px 3px rgba(0, 0, 0, 0.9);
   }
   .story-card-status {
     margin-top: 0.5rem;
