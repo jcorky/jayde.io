@@ -24,3 +24,9 @@
 # Brand images and fonts.
 /img/*
   Cache-Control: public, max-age=2592000
+
+# Hero video + poster (large files). Cache at the edge + in the browser so the
+# 8.4 MB video isn't pulled from origin on every visit. 1 day keeps redeploys of
+# the video propagating within a day (purge the cache to update sooner).
+/media/*
+  Cache-Control: public, max-age=86400
