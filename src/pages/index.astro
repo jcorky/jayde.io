@@ -13,20 +13,21 @@ const jsonLd = graph([websiteSchema(), personSchema()]);
 <SiteLayout title={PAGE_META.home.title} description={PAGE_META.home.description} path="/" jsonLd={jsonLd}>
   <!-- 1 · Hero: Saturn + JAYDE.IO wordmark -->
   <section class="hero" aria-labelledby="site-heading">
+    <video
+      class="hero-video"
+      poster="/media/jayde-header-poster.jpg"
+      width="1920"
+      height="1080"
+      muted
+      loop
+      playsinline
+      preload="auto"
+      aria-hidden="true"
+    >
+      <source src="/media/jayde-header.mp4" type="video/mp4" />
+    </video>
+    <div class="hero-scrim" aria-hidden="true"></div>
     <div class="hero-stage">
-      <video
-        class="hero-video"
-        poster="/media/jayde-header-poster.jpg"
-        width="1280"
-        height="720"
-        muted
-        loop
-        playsinline
-        preload="auto"
-        aria-hidden="true"
-      >
-        <source src="/media/jayde-header.mp4" type="video/mp4" />
-      </video>
       <img
         class="hero-wordmark"
         src="/img/wordmark.png"
@@ -89,68 +90,77 @@ const jsonLd = graph([websiteSchema(), personSchema()]);
 </SiteLayout>
 
 <style>
-  /* 1 · Hero */
+  /* 1 · Hero — full-bleed background video with the wordmark overlaid */
   .hero {
-    background: var(--c-black);
-    padding-block: clamp(1.5rem, 5vw, 3rem);
-  }
-  .hero-stage {
     position: relative;
-    max-width: 1120px;
-    margin-inline: auto;
-    padding-inline: var(--gutter);
-    min-height: clamp(360px, 52vw, 560px);
+    background: var(--c-black);
+    overflow: hidden;
+    height: clamp(440px, 66vh, 760px);
+    display: flex;
   }
   .hero-video {
     position: absolute;
-    top: 0;
-    left: var(--gutter);
-    width: 56%;
-    height: auto;
-    aspect-ratio: 16 / 9;
+    inset: 0;
+    width: 100%;
+    height: 100%;
     object-fit: cover;
-    display: block;
     background: var(--c-black);
-    border-radius: 10px;
-    box-shadow: 0 12px 44px rgba(0, 0, 0, 0.55);
+    z-index: 0;
+  }
+  .hero-scrim {
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    pointer-events: none;
+    background: linear-gradient(to bottom, rgba(0, 0, 0, 0.3) 0%, rgba(0, 0, 0, 0) 34%, rgba(0, 0, 0, 0.6) 100%);
+  }
+  .hero-stage {
+    position: relative;
+    z-index: 2;
+    width: 100%;
+    max-width: 1120px;
+    margin-inline: auto;
+    padding-inline: var(--gutter);
   }
   .hero-wordmark {
     position: absolute;
     right: var(--gutter);
-    bottom: 12%;
-    width: 58%;
+    bottom: 16%;
+    width: 52%;
     height: auto;
+    filter: drop-shadow(0 6px 22px rgba(0, 0, 0, 0.75));
   }
   .hero-identity {
     position: absolute;
     left: var(--gutter);
-    bottom: 0;
+    bottom: 9%;
     margin: 0;
     font-size: clamp(0.95rem, 1.6vw, 1.35rem);
     letter-spacing: 0.14em;
-    color: var(--c-wordmark-gray);
+    color: var(--c-text);
     font-weight: 700;
+    text-shadow: 0 2px 12px rgba(0, 0, 0, 0.9);
   }
 
   @media (max-width: 720px) {
+    .hero {
+      height: clamp(380px, 64vh, 600px);
+    }
     .hero-stage {
       display: flex;
       flex-direction: column;
+      justify-content: flex-end;
       align-items: center;
-      gap: 1.25rem;
-      min-height: 0;
+      gap: 0.75rem;
+      padding-bottom: clamp(1.25rem, 5vw, 2rem);
     }
-    .hero-video,
     .hero-wordmark,
     .hero-identity {
       position: static;
       width: auto;
     }
-    .hero-video {
-      width: min(90vw, 480px);
-    }
     .hero-wordmark {
-      width: min(92vw, 460px);
+      width: min(88vw, 420px);
     }
     .hero-identity {
       text-align: center;
