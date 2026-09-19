@@ -27,11 +27,7 @@ const jsonLd = graph([
 
   <div class="blog-surface">
     <div class="container section">
-      <p class="blog-intro">
-        This is where I collect project and port stories — notes from the terminals I work with, where the
-        software I train on meets the reality of a working port.
-      </p>
-      <p class="blog-empty">No posts yet — check back soon.</p>
+      <p class="blog-coming">Coming soon.</p>
     </div>
   </div>
 </SiteLayout>
@@ -41,13 +37,9 @@ const jsonLd = graph([
     background: var(--c-olive);
     min-height: 60vh;
   }
-  .blog-intro {
-    max-width: 62ch;
-    margin-bottom: 1.25rem;
-  }
-  .blog-empty {
-    color: #cfd3c3;
-    font-size: var(--fs-small);
-    letter-spacing: 0.02em;
+  .blog-coming {
+    font-weight: 700;
+    font-size: clamp(1.25rem, 3vw, 1.7rem);
+    color: var(--c-text);
   }
 </style>
