@@ -1,5 +1,5 @@
 ---
-import { SITE, SOCIALS } from '../data/site';
+import { SOCIALS } from '../data/site';
 const year = 2026;
 
 const icons: Record<string, string> = {
@@ -22,9 +22,6 @@ const icons: Record<string, string> = {
         ))
       }
     </nav>
-    <p class="footer-contact">
-      <a href={`mailto:${SITE.email}`}>{SITE.email}</a>
-    </p>
     <p class="footer-legal">© {year} Jayde Cork</p>
   </div>
 </footer>
@@ -61,10 +58,6 @@ const icons: Record<string, string> = {
   }
   .footer-social a:hover {
     color: var(--c-text);
-  }
-  .footer-contact a {
-    color: var(--c-text);
-    font-size: var(--fs-small);
   }
   .footer-legal {
     color: var(--c-muted);
