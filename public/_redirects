@@ -3,3 +3,4 @@
 # -> https://jayde.io) are configured as Cloudflare Redirect Rules, not here
 # (the _redirects file matches on path only, not hostname). See README.
 /page-3   /contact   301
+/panama   /blog      301

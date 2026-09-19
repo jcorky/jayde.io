@@ -1,8 +1,8 @@
 import type { APIRoute } from 'astro';
 import { SITE } from '../data/site';
 
-// Allow all public content and assets. Noindex pages (e.g. /panama) stay
-// crawlable so crawlers can actually read the noindex directive.
+// Allow all public content and assets. Any noindex pages stay crawlable so
+// crawlers can actually read the noindex directive.
 export const GET: APIRoute = () => {
   const body = [
     'User-agent: *',

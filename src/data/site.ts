@@ -122,12 +122,7 @@ export const PAGE_META = {
   blog: {
     title: 'Port Stories & Projects | Jayde.IO',
     description:
-      "Follow Jayde Cork's project and port stories, including the developing Panama 2026 collection.",
-  },
-  panama: {
-    title: 'Panama 2026 | Jayde.IO',
-    description:
-      'Panama 2026: a developing collection of port stories and photographs from Jayde Cork. Articles coming soon.',
+      "Project and port stories from Jayde Cork — notes from the terminals and the software that keeps cargo moving.",
   },
   skills: {
     title: 'Technical Training & Software Skills | Jayde.IO',

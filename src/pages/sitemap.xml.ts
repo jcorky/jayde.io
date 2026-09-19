@@ -1,8 +1,8 @@
 import type { APIRoute } from 'astro';
 import { SITE, SITEMAP_ROUTES } from '../data/site';
 
-// Only canonical, indexable pages that return 200. Panama (noindex placeholder),
-// redirects, the retired page, the API, and error pages are excluded.
+// Only canonical, indexable pages that return 200. Redirects, the retired page,
+// the API, and error pages are excluded.
 export const GET: APIRoute = () => {
   const urls = SITEMAP_ROUTES.map(
     (r) =>
