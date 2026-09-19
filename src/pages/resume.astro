@@ -1,7 +1,7 @@
 ---
 import SiteLayout from '../layouts/SiteLayout.astro';
 import Banner from '../components/Banner.astro';
-import { SITE, RESUME, RESUME_DRAFTS, PAGE_META } from '../data/site';
+import { RESUME, RESUME_DRAFTS, PAGE_META } from '../data/site';
 import { graph, websiteSchema, personSchema, profilePageSchema, breadcrumbSchema } from '../data/schema';
 
 import contactShip from '../assets/images/contact-ship.jpg';
@@ -47,7 +47,6 @@ const hasPdf = Boolean(RESUME_DRAFTS.downloadablePdf);
         <p class="resume-role">{RESUME.role}</p>
         <ul class="resume-meta" role="list">
           <li><a href={`https://${RESUME.website}`}>{RESUME.website}</a></li>
-          <li><a href={`mailto:${SITE.email}`}>{RESUME.email}</a></li>
         </ul>
       </header>
 
