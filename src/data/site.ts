@@ -20,7 +20,6 @@ export const NAV: { label: string; href: string }[] = [
   { label: 'Home', href: '/' },
   { label: 'Blog', href: '/blog' },
   { label: 'Skills', href: '/skills' },
-  { label: 'Resume', href: '/resume' },
   { label: 'Contact', href: '/contact' },
 ];
 
@@ -152,6 +151,5 @@ export const SITEMAP_ROUTES: { path: string; lastmod: string; priority: string }
   { path: '/', lastmod: '2026-09-18', priority: '1.0' },
   { path: '/blog', lastmod: '2026-09-18', priority: '0.8' },
   { path: '/skills', lastmod: '2026-09-18', priority: '0.7' },
-  { path: '/resume', lastmod: '2026-09-18', priority: '0.7' },
   { path: '/contact', lastmod: '2026-09-18', priority: '0.6' },
 ];
